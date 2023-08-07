@@ -31,12 +31,19 @@ function handlerGalleryClick(evt) {
     return;
   }
 
-  const instance = basicLightbox.create(`<img src="${evt.target.dataset.source}"/>`);
-  instance.show();
-
-  document.addEventListener("keydown", (evt) => {
-    if (evt.code === "Escape") {
-      instance.close();
-    }
+  const instance = basicLightbox.create(`<img src="${evt.target.dataset.source}"/>`, {
+    onShow: (instance) => {
+      document.addEventListener("keydown", (event) => onKeyDown(event, instance));
+    },
+    onClose: (instance) => {
+      document.removeEventListener("keydown", (event) => onKeyDown(event, instance));
+    },
   });
+  instance.show();
+}
+
+function onKeyDown(event, instance) {
+  if (event.code === "Escape") {
+    instance.close();
+  }
 }
